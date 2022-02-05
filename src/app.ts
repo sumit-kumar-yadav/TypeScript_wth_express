@@ -4,9 +4,12 @@ const expressLayouts = require('express-ejs-layouts');
 const app: Application = express();
 const port = process.env.PORT || 8000;
 
+// DB connection with PostgreSQL using Sequilize
+const { sequelize } = require('./config/sequilize');
 
 // Express parser to parse the form data into js object
 app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 // set up the view engine
 app.set('view engine', 'ejs');
