@@ -30,7 +30,7 @@ const fetchContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("Inside the body", req.body);
+        // console.log("Inside the body", req.body);
         // This creates the table, dropping it first if it already existed
         yield Contact.sync();
         // Create a contact
@@ -52,7 +52,45 @@ const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
 });
+const deleteContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let contact = yield Contact.findByPk(req.params.id);
+        if (contact)
+            yield contact.destroy();
+        return res.status(200).json({
+            message: "Contact is deleted",
+            data: contact
+        });
+    }
+    catch (error) {
+        console.log("Error in creating a contact", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+});
+const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield Contact.update(req.query, {
+            where: {
+                id: req.params.id
+            }
+        });
+        return res.status(200).json({
+            message: "Contact is updated",
+            data: true
+        });
+    }
+    catch (error) {
+        console.log("Error in updating the contact", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+});
 module.exports = {
+    createContact,
     fetchContacts,
-    createContact
+    updateContact,
+    deleteContact, // D
 };

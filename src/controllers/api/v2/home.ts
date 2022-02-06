@@ -24,7 +24,7 @@ const fetchContacts = async (req: Request , res: Response)=>{
 
 const createContact =async (req: Request, res: Response) => {
     try {
-        console.log("Inside the body", req.body);
+        // console.log("Inside the body", req.body);
 
         // This creates the table, dropping it first if it already existed
         await Contact.sync();
@@ -50,7 +50,47 @@ const createContact =async (req: Request, res: Response) => {
     }
 }
 
+const deleteContact = async (req: Request, res: Response) => {
+    try {
+        let contact = await Contact.findByPk(req.params.id);
+        if(contact) await contact.destroy();
+        
+        return res.status(200).json({
+            message: "Contact is deleted",
+            data: contact
+        });
+    } catch (error) {
+        console.log("Error in creating a contact", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
+const updateContact =async (req: Request, res: Response) => {
+    try {
+        await Contact.update(req.query, {
+            where: {
+              id: req.params.id
+            }
+          });
+
+        return res.status(200).json({
+            message: "Contact is updated",
+            data: true
+        });
+
+    } catch (error) {
+        console.log("Error in updating the contact", error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
 module.exports = {
-    fetchContacts,
-    createContact
+    createContact,      // C
+    fetchContacts,      // R
+    updateContact,      // U
+    deleteContact,      // D
 }
